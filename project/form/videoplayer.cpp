@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QListWidget>
 #include <QMediaPlaylist>
@@ -55,7 +56,8 @@ VideoPlayer::VideoPlayer(QWidget *parent)
 void VideoPlayer::setupUi()
 {
     auto *root = new QHBoxLayout(this);
-    root->setContentsMargins(0, 0, 0, 0);
+    root->setContentsMargins(12, 12, 12, 12);
+    root->setSpacing(12);
 
     /* 左侧播放区 */
     auto *videoPanel = new QWidget(this);
@@ -98,6 +100,12 @@ void VideoPlayer::setupUi()
     m_timeLabel = new QLabel(QStringLiteral("00:00"), m_controlBar);
     m_durationLabel = new QLabel(QStringLiteral("/00:00"), m_controlBar);
 
+    m_playButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_play.png")));
+    m_nextButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_next.png")));
+    m_volumeDownButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_volume_down.png")));
+    m_volumeUpButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_volume_up.png")));
+    m_fullscreenButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_fullscreen.png")));
+
     controlRow->addWidget(m_playButton);
     controlRow->addWidget(m_nextButton);
     controlRow->addWidget(m_volumeDownButton);
@@ -114,7 +122,7 @@ void VideoPlayer::setupUi()
 
     /* 右侧视频列表 */
     m_sidePanel = new QWidget(this);
-    m_sidePanel->setObjectName(QStringLiteral("hWidget1"));
+    m_sidePanel->setObjectName(QStringLiteral("card"));
     auto *sideLayout = new QVBoxLayout(m_sidePanel);
     sideLayout->setContentsMargins(8, 8, 8, 8);
     m_list = new QListWidget(m_sidePanel);
@@ -188,7 +196,11 @@ void VideoPlayer::onFullscreenClicked(bool checked)
 
 void VideoPlayer::onStateChanged(QMediaPlayer::State state)
 {
-    m_playButton->setChecked(state == QMediaPlayer::PlayingState);
+    const bool playing = (state == QMediaPlayer::PlayingState);
+    m_playButton->setChecked(playing);
+    m_playButton->setIcon(QIcon(playing
+        ? QStringLiteral(":/images/icons/btn_pause.png")
+        : QStringLiteral(":/images/icons/btn_play.png")));
 }
 
 void VideoPlayer::onPlaylistIndexChanged(int index)
