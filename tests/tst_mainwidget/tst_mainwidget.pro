@@ -4,3 +4,4 @@ TEMPLATE = app
 include(../common.pri)
 
 SOURCES += tst_mainwidget.cpp
+RESOURCES += $$PWD/../../project/res.qrc

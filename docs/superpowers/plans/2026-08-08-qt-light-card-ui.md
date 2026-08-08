@@ -21,6 +21,7 @@
 - Windows 构建:VS2022 Developer 环境下 `x86/build.cmd`;测试:`tests/tests.pro` + `nmake` + `QT_QPA_PLATFORM=offscreen`。
 - 测试与运行前必须设置 PATH:`D:\anaconda3\Library\bin;D:\opencv-3.4.16\opencv\build\x64\vc15\bin` 在前,否则测试/程序找不到 Qt 与 OpenCV DLL。
 - 主窗口 `MainWidget` 必须设置 `setObjectName("project")`,使 `QWidget#project` 全局背景样式生效。
+- 测试二进制必须包含资源:在 `tests/tst_mainwidget/tst_mainwidget.pro` 中追加 `RESOURCES += $$PWD/../../project/res.qrc`,否则 `:/images/...` 资源断言无法通过。
 
 ## File Structure
 
@@ -90,6 +91,12 @@ void TestMainWidget::mediaIconsExistInResources()
 ```
 
 文件顶部 include 增加 `#include <QPixmap>`。
+
+同时在 `tests/tst_mainwidget/tst_mainwidget.pro` 追加资源引用(否则测试二进制不包含 qrc):
+
+```pro
+RESOURCES += $$PWD/../../project/res.qrc
+```
 
 - [ ] **Step 2: 运行测试确认失败**
 
@@ -448,7 +455,7 @@ Expected: 27 个 PNG 生成到 `project/images/icons/`,无异常。
 - [ ] **Step 7: Commit**
 
 ```bash
-git add scripts/generate_icons.py project/images/icons project/res.qrc tests/build_tests.cmd tests/tst_mainwidget/tst_mainwidget.cpp
+git add scripts/generate_icons.py project/images/icons project/res.qrc tests/build_tests.cmd tests/tst_mainwidget/tst_mainwidget.cpp tests/tst_mainwidget/tst_mainwidget.pro
 git commit -m "feat(icons): 生成浅色 UI 图标并注册到资源"
 ```
 

@@ -3,6 +3,33 @@
         <file>style/mainstyle.qss</file>
         <file>style/music_style.qss</file>
         <file>style/video_style.qss</file>
+        <file>images/icons/btn_play.png</file>
+        <file>images/icons/btn_pause.png</file>
+        <file>images/icons/btn_prev.png</file>
+        <file>images/icons/btn_next.png</file>
+        <file>images/icons/btn_volume.png</file>
+        <file>images/icons/btn_volume_up.png</file>
+        <file>images/icons/btn_volume_down.png</file>
+        <file>images/icons/btn_fullscreen.png</file>
+        <file>images/icons/btn_screen.png</file>
+        <file>images/icons/btn_favorite.png</file>
+        <file>images/icons/btn_favorite_on.png</file>
+        <file>images/icons/btn_list.png</file>
+        <file>images/icons/btn_menu.png</file>
+        <file>images/icons/btn_photo.png</file>
+        <file>images/icons/arrow_left.png</file>
+        <file>images/icons/arrow_right.png</file>
+        <file>images/icons/dot_normal.png</file>
+        <file>images/icons/dot_active.png</file>
+        <file>images/icons/led_on.png</file>
+        <file>images/icons/led_off.png</file>
+        <file>images/icons/beep_on.png</file>
+        <file>images/icons/beep_off.png</file>
+        <file>images/icons/btn_connect.png</file>
+        <file>images/icons/btn_disconnect.png</file>
+        <file>images/icons/btn_send.png</file>
+        <file>images/icons/btn_clear.png</file>
+        <file>images/icons/btn_refresh.png</file>
         <file>images/banna_pic/banna/1.jpg</file>
         <file>images/banna_pic/banna/2.jpg</file>
         <file>images/banna_pic/banna/3.jpg</file>

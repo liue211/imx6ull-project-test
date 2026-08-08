@@ -1,6 +1,7 @@
 #include <QtTest/QtTest>
 
 #include <QListWidget>
+#include <QPixmap>
 #include <QStackedWidget>
 
 #include "../../project/mainwidget.h"
@@ -14,6 +15,7 @@ private slots:
     void menuHasExpectedPages();
     void switchingRowChangesPage();
     void pagesAreRealModules();
+    void mediaIconsExistInResources();
 };
 
 void TestMainWidget::menuHasExpectedPages()
@@ -63,6 +65,26 @@ void TestMainWidget::pagesAreRealModules()
         QVERIFY(QString::fromLatin1(page->metaObject()->className())
                     != QStringLiteral("PlaceholderPage"));
     }
+}
+
+void TestMainWidget::mediaIconsExistInResources()
+{
+    const QStringList paths = {
+        QStringLiteral(":/images/icons/btn_play.png"),
+        QStringLiteral(":/images/icons/btn_pause.png"),
+        QStringLiteral(":/images/icons/btn_prev.png"),
+        QStringLiteral(":/images/icons/btn_next.png"),
+        QStringLiteral(":/images/icons/btn_volume.png"),
+        QStringLiteral(":/images/icons/btn_volume_up.png"),
+        QStringLiteral(":/images/icons/btn_volume_down.png"),
+        QStringLiteral(":/images/icons/btn_fullscreen.png"),
+        QStringLiteral(":/images/icons/btn_screen.png"),
+        QStringLiteral(":/images/icons/arrow_left.png"),
+        QStringLiteral(":/images/icons/arrow_right.png"),
+        QStringLiteral(":/images/icons/btn_send.png"),
+    };
+    for (const QString &path : paths)
+        QVERIFY2(!QPixmap(path).isNull(), qPrintable(path));
 }
 
 QTEST_MAIN(TestMainWidget)
