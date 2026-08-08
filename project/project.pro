@@ -45,17 +45,21 @@ win32 {
     INCLUDEPATH += $$OPENCV_DIR/include
     LIBS += -L$$OPENCV_DIR/x64/vc15/lib -lopencv_world3416
 }
-# Linux x86 / 板端(正点原子 SDK)示例,按实际路径修改:
-# unix:!macx {
-#     INCLUDEPATH += /home/coucou/linux/opencv-3.4.1/install/include
-#     LIBS += /home/coucou/linux/opencv-3.4.1/install/lib/libopencv_core.so \
-#             /home/coucou/linux/opencv-3.4.1/install/lib/libopencv_imgproc.so \
-#             /home/coucou/linux/opencv-3.4.1/install/lib/libopencv_imgcodecs.so \
-#             /home/coucou/linux/opencv-3.4.1/install/lib/libopencv_highgui.so \
-#             /home/coucou/linux/opencv-3.4.1/install/lib/libopencv_objdetect.so \
-#             /home/coucou/linux/opencv-3.4.1/install/lib/libopencv_videoio.so \
-#             /home/coucou/linux/opencv-3.4.1/install/lib/libopencv_ml.so
-# }
+# Linux x86 / 板端(正点原子 SDK):ARM OpenCV 路径可用 ARM_OPENCV_DIR 覆盖,例如:
+#   qmake ARM_OPENCV_DIR=/home/liu/linux/opencv-3.4.1/install ../project/project.pro
+unix:!macx {
+    isEmpty(ARM_OPENCV_DIR): ARM_OPENCV_DIR = /home/coucou/linux/opencv-3.4.1/install
+    !exists($$ARM_OPENCV_DIR/lib/libopencv_core.so): error("OpenCV 未找到: $$ARM_OPENCV_DIR,请用 qmake ARM_OPENCV_DIR=<路径> 指定")
+    message("ARM_OPENCV_DIR = $$ARM_OPENCV_DIR")
+    INCLUDEPATH += $$ARM_OPENCV_DIR/include
+    LIBS += $$ARM_OPENCV_DIR/lib/libopencv_core.so \
+            $$ARM_OPENCV_DIR/lib/libopencv_imgproc.so \
+            $$ARM_OPENCV_DIR/lib/libopencv_imgcodecs.so \
+            $$ARM_OPENCV_DIR/lib/libopencv_highgui.so \
+            $$ARM_OPENCV_DIR/lib/libopencv_objdetect.so \
+            $$ARM_OPENCV_DIR/lib/libopencv_videoio.so \
+            $$ARM_OPENCV_DIR/lib/libopencv_ml.so
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

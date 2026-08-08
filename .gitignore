@@ -2,6 +2,8 @@
 arm/
 x86/
 build/
+build-arm/
+.worktrees/
 debug/
 release/
 

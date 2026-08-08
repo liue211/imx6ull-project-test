@@ -43,3 +43,29 @@ mingw32-make
 ```
 
 > 注意:后续步骤需要 OpenCV 3.4.x、Qt5Mqtt 等,仍按计划在 WSL/Linux 环境进行。
+
+## Ubuntu 交叉编译 + SD 卡部署(imx6ull)
+
+工程根目录已提供两个脚本:
+
+```bash
+# 1) 交叉编译(自动查找 ARM Qt 和 ARM OpenCV,找不到就按提示传路径)
+./build_arm.sh
+# 或: ./build_arm.sh /路径/ARM-Qt/bin/qmake /路径/opencv-3.4.1/install
+
+# 2) 部署到 SD 卡 rootfs 分区(先 lsblk 确认设备号!)
+sudo ./deploy_sd.sh /dev/sdb /dev/sdb2
+# 如果板子系统里没有 OpenCV,再传 OpenCV 安装目录让它一起拷:
+sudo ./deploy_sd.sh /dev/sdb /dev/sdb2 /路径/opencv-3.4.1/install
+```
+
+板子 SD 启动后:
+
+```bash
+cd /home/root/project
+export QT_QPA_PLATFORM=eglfs
+export LD_LIBRARY_PATH=/usr/lib:/usr/lib/qt5.6.2/lib:$LD_LIBRARY_PATH
+./project
+```
+
+> 从 Windows 拷过去的脚本如果报 `\r` 错误,先执行 `sed -i 's/\r$//' build_arm.sh deploy_sd.sh`。
