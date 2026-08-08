@@ -1,6 +1,7 @@
 #include <QtTest/QtTest>
 
 #include <QFile>
+#include <QGroupBox>
 #include <QLabel>
 #include <QListView>
 #include <QListWidget>
@@ -23,6 +24,7 @@ private slots:
     void topNavIsHorizontalWithClock();
     void globalStyleIsLight();
     void bannaHasLightWidgets();
+    void opencvHasLightWidgets();
 };
 
 void TestMainWidget::menuHasExpectedPages()
@@ -127,6 +129,22 @@ void TestMainWidget::bannaHasLightWidgets()
     QVERIFY(page->findChild<QPushButton *>(QStringLiteral("btnLeft")) != nullptr);
     QVERIFY(page->findChild<QPushButton *>(QStringLiteral("btnRight")) != nullptr);
     QVERIFY(!page->findChild<QPushButton *>(QStringLiteral("btnLeft"))->icon().isNull());
+}
+
+void TestMainWidget::opencvHasLightWidgets()
+{
+    MainWidget w;
+    auto *stack = w.findChild<QStackedWidget *>(QStringLiteral("stackedWidget"));
+    QWidget *page = stack->widget(1);
+    QVERIFY(page->findChild<QLabel *>(QStringLiteral("imageLabel")) != nullptr);
+    QVERIFY(page->findChild<QPushButton *>(QStringLiteral("primaryButton")) != nullptr);
+    bool found = false;
+    const auto boxes = page->findChildren<QGroupBox *>();
+    for (QGroupBox *box : boxes) {
+        if (box->title() == QStringLiteral("滤波"))
+            found = true;
+    }
+    QVERIFY(found);
 }
 
 QTEST_MAIN(TestMainWidget)

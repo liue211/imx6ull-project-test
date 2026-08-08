@@ -40,24 +40,23 @@ void opencv::setupUi()
 
     /* 左侧 2x2 图像区 */
     auto *imagePanel = new QWidget(this);
+    imagePanel->setObjectName(QStringLiteral("card"));
     auto *grid = new QGridLayout(imagePanel);
     grid->setContentsMargins(0, 0, 0, 0);
-
-    const QString labelStyle =
-        QStringLiteral("background:#3c3c3c; color:white; border-radius:8px;");
 
     m_srcLabel = new QLabel(QStringLiteral("src"), imagePanel);
     m_resultLabel = new QLabel(QStringLiteral("结果"), imagePanel);
     m_extraLabel1 = new QLabel(QStringLiteral("通道2"), imagePanel);
     m_extraLabel2 = new QLabel(QStringLiteral("通道3"), imagePanel);
     for (QLabel *label : {m_srcLabel, m_resultLabel, m_extraLabel1, m_extraLabel2}) {
+        label->setObjectName(QStringLiteral("imageLabel"));
         label->setMinimumSize(300, 220);
         label->setAlignment(Qt::AlignCenter);
-        label->setStyleSheet(labelStyle);
         label->setScaledContents(true);
     }
 
     auto *openButton = new QPushButton(QStringLiteral("选择图像"), imagePanel);
+    openButton->setObjectName(QStringLiteral("primaryButton"));
     connect(openButton, &QPushButton::clicked, this, &opencv::selectImage);
 
     grid->addWidget(m_srcLabel, 0, 0);
