@@ -22,6 +22,7 @@
 - 测试与运行前必须设置 PATH:`D:\anaconda3\Library\bin;D:\opencv-3.4.16\opencv\build\x64\vc15\bin` 在前,否则测试/程序找不到 Qt 与 OpenCV DLL。
 - 主窗口 `MainWidget` 必须设置 `setObjectName("project")`,使 `QWidget#project` 全局背景样式生效。
 - 测试二进制必须包含资源:在 `tests/tst_mainwidget/tst_mainwidget.pro` 中追加 `RESOURCES += $$PWD/../../project/res.qrc`,否则 `:/images/...` 资源断言无法通过。
+- 中文路径导致 nmake 对资源文件的时间戳依赖失效:修改任何 qrc 内文件后,必须先删除 `tests/tst_mainwidget/release/qrc_res.cpp` 再构建(`tests/build_tests.cmd` 已内置该处理)。
 
 ## File Structure
 
@@ -903,6 +904,8 @@ QPushButton#dot:checked {
 - [ ] **Step 4: 运行测试确认通过**
 
 Expected: `globalStyleIsLight` PASS。
+
+说明:若资源文件变更后 rcc 未重新生成(中文路径下 nmake 依赖检测失效),`tests/build_tests.cmd` 已会在构建前删除 `release/qrc_res.cpp` 强制刷新,直接重跑即可。
 
 - [ ] **Step 5: Commit**
 

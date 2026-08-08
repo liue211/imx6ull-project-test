@@ -1,5 +1,6 @@
 #include <QtTest/QtTest>
 
+#include <QFile>
 #include <QLabel>
 #include <QListView>
 #include <QListWidget>
@@ -19,6 +20,7 @@ private slots:
     void pagesAreRealModules();
     void mediaIconsExistInResources();
     void topNavIsHorizontalWithClock();
+    void globalStyleIsLight();
 };
 
 void TestMainWidget::menuHasExpectedPages()
@@ -101,6 +103,17 @@ void TestMainWidget::topNavIsHorizontalWithClock()
     QCOMPARE(list->maximumHeight(), 64);
     QVERIFY(time != nullptr);
     QVERIFY(!time->text().isEmpty());
+}
+
+void TestMainWidget::globalStyleIsLight()
+{
+    QFile f(QStringLiteral(":/style/mainstyle.qss"));
+    QVERIFY(f.open(QFile::ReadOnly));
+    const QString css = QString::fromUtf8(f.readAll());
+    QVERIFY(css.contains(QStringLiteral("#F4F6F8")));
+    QVERIFY(css.contains(QStringLiteral("#2F7CF6")));
+    QVERIFY(css.contains(QStringLiteral("listWidget")));
+    QVERIFY(css.contains(QStringLiteral("#card")));
 }
 
 QTEST_MAIN(TestMainWidget)

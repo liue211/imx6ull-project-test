@@ -5,6 +5,7 @@ set PATH=D:\anaconda3\Library\bin;D:\opencv-3.4.16\opencv\build\x64\vc15\bin;%PA
 cd /d "%~dp0"
 
 cd tst_mainwidget
+if exist release\qrc_res.cpp del /q release\qrc_res.cpp
 qmake -spec win32-msvc tst_mainwidget.pro
 if errorlevel 1 exit /b 1
 nmake
