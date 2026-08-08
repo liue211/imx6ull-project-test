@@ -1,5 +1,6 @@
 #include <QtTest/QtTest>
 
+#include <QChartView>
 #include <QFile>
 #include <QGroupBox>
 #include <QLabel>
@@ -26,6 +27,7 @@ private slots:
     void bannaHasLightWidgets();
     void opencvHasLightWidgets();
     void faceDetectHasLightWidgets();
+    void boardPageHasChart();
 };
 
 void TestMainWidget::menuHasExpectedPages()
@@ -155,6 +157,14 @@ void TestMainWidget::faceDetectHasLightWidgets()
     QWidget *page = stack->widget(2);
     QVERIFY(page->findChild<QLabel *>(QStringLiteral("videoPanel")) != nullptr);
     QVERIFY(page->findChild<QPushButton *>(QStringLiteral("btn_start")) != nullptr);
+}
+
+void TestMainWidget::boardPageHasChart()
+{
+    MainWidget w;
+    auto *stack = w.findChild<QStackedWidget *>(QStringLiteral("stackedWidget"));
+    QWidget *page = stack->widget(3);
+    QVERIFY(page->findChild<QtCharts::QChartView *>(QStringLiteral("chartView")) != nullptr);
 }
 
 QTEST_MAIN(TestMainWidget)

@@ -6,6 +6,8 @@
 
 #include <QChart>
 #include <QChartView>
+#include <QBrush>
+#include <QColor>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
@@ -122,7 +124,25 @@ imx6ullTest::imx6ullTest(QWidget *parent)
     chart->legend()->setVisible(true);
     chart->setTitle(QStringLiteral("AP3216C 实时曲线"));
 
+    chart->setBackgroundBrush(QBrush(QColor(QStringLiteral("#FFFFFF"))));
+    chart->setPlotAreaBackgroundBrush(QBrush(QColor(QStringLiteral("#F9FAFB"))));
+    chart->setPlotAreaBackgroundVisible(true);
+    chart->setTitleBrush(QBrush(QColor(QStringLiteral("#1F2937"))));
+    chart->legend()->setLabelColor(QColor(QStringLiteral("#6B7280")));
+
+    axisX->setLabelsColor(QColor(QStringLiteral("#6B7280")));
+    axisY->setLabelsColor(QColor(QStringLiteral("#6B7280")));
+    axisX->setLinePenColor(QColor(QStringLiteral("#E5E7EB")));
+    axisY->setLinePenColor(QColor(QStringLiteral("#E5E7EB")));
+    axisX->setGridLineColor(QColor(QStringLiteral("#F3F4F6")));
+    axisY->setGridLineColor(QColor(QStringLiteral("#F3F4F6")));
+
+    m_alsSeries->setColor(QColor(QStringLiteral("#2F7CF6")));
+    m_irSeries->setColor(QColor(QStringLiteral("#22C55E")));
+    m_psSeries->setColor(QColor(QStringLiteral("#F59E0B")));
+
     m_chartView = new QChartView(chart, this);
+    m_chartView->setObjectName(QStringLiteral("chartView"));
     m_chartView->setRenderHint(QPainter::Antialiasing);
 
     root->addLayout(left, 0);
