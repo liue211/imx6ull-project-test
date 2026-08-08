@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class QLineEdit;
+class QLabel;
 class QPlainTextEdit;
 class QPushButton;
 class QSpinBox;
@@ -28,6 +29,7 @@ private:
     void appendLog(const QString &text);
 
     SimpleMqttClient *m_client = nullptr;
+    QLabel *m_statusLabel = nullptr;
     QLineEdit *m_hostEdit = nullptr;
     QSpinBox *m_portSpin = nullptr;
     QPushButton *m_connectButton = nullptr;

@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QListView>
 #include <QListWidget>
+#include <QPlainTextEdit>
 #include <QPixmap>
 #include <QPushButton>
 #include <QStackedWidget>
@@ -30,6 +31,7 @@ private slots:
     void boardPageHasChart();
     void musicPageHasIcons();
     void videoPageHasIcons();
+    void mqttPageHasStatus();
 };
 
 void TestMainWidget::menuHasExpectedPages()
@@ -190,6 +192,15 @@ void TestMainWidget::videoPageHasIcons()
     QVERIFY(play != nullptr);
     QVERIFY(!play->icon().isNull());
     QVERIFY(page->findChild<QPushButton *>(QStringLiteral("btn_screen")) != nullptr);
+}
+
+void TestMainWidget::mqttPageHasStatus()
+{
+    MainWidget w;
+    auto *stack = w.findChild<QStackedWidget *>(QStringLiteral("stackedWidget"));
+    QWidget *page = stack->widget(6);
+    QVERIFY(page->findChild<QLabel *>(QStringLiteral("statusLabel")) != nullptr);
+    QVERIFY(page->findChild<QPlainTextEdit *>(QStringLiteral("logEdit")) != nullptr);
 }
 
 QTEST_MAIN(TestMainWidget)

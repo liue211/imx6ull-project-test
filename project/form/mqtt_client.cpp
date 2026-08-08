@@ -53,10 +53,14 @@ void mqtt_client::setupUi()
     m_portSpin->setRange(1, 65535);
     m_portSpin->setValue(1883);
     m_connectButton = new QPushButton(QStringLiteral("Connect"), connBox);
+    m_statusLabel = new QLabel(QStringLiteral("未连接"), connBox);
+    m_statusLabel->setObjectName(QStringLiteral("statusLabel"));
+    m_connectButton->setObjectName(QStringLiteral("btn_connect"));
     connLayout->addWidget(new QLabel(QStringLiteral("Host:"), connBox));
     connLayout->addWidget(m_hostEdit, 1);
     connLayout->addWidget(new QLabel(QStringLiteral("Port:"), connBox));
     connLayout->addWidget(m_portSpin);
+    connLayout->addWidget(m_statusLabel);
     connLayout->addWidget(m_connectButton);
     root->addWidget(connBox);
 
@@ -64,6 +68,7 @@ void mqtt_client::setupUi()
     auto *subLayout = new QHBoxLayout(subBox);
     m_subscribeTopicEdit = new QLineEdit(QStringLiteral("test/topic"), subBox);
     m_subscribeButton = new QPushButton(QStringLiteral("Subscribe"), subBox);
+    m_subscribeButton->setObjectName(QStringLiteral("btn_subscribe"));
     subLayout->addWidget(new QLabel(QStringLiteral("Topic:"), subBox));
     subLayout->addWidget(m_subscribeTopicEdit, 1);
     subLayout->addWidget(m_subscribeButton);
@@ -74,6 +79,7 @@ void mqtt_client::setupUi()
     m_publishTopicEdit = new QLineEdit(QStringLiteral("test/topic"), pubBox);
     m_messageEdit = new QLineEdit(QStringLiteral("hello"), pubBox);
     m_publishButton = new QPushButton(QStringLiteral("Publish"), pubBox);
+    m_publishButton->setObjectName(QStringLiteral("btn_publish"));
     pubLayout->addWidget(new QLabel(QStringLiteral("Topic:"), pubBox), 0, 0);
     pubLayout->addWidget(m_publishTopicEdit, 0, 1);
     pubLayout->addWidget(new QLabel(QStringLiteral("Message:"), pubBox), 1, 0);
@@ -82,6 +88,7 @@ void mqtt_client::setupUi()
     root->addWidget(pubBox);
 
     m_log = new QPlainTextEdit(this);
+    m_log->setObjectName(QStringLiteral("logEdit"));
     m_log->setReadOnly(true);
     m_log->setPlaceholderText(QStringLiteral("连接/订阅/发布日志"));
     root->addWidget(m_log, 1);
@@ -94,19 +101,28 @@ void mqtt_client::appendLog(const QString &text)
 
 void mqtt_client::onStateChanged()
 {
-    const QString state = [this]() {
-        switch (m_client->state()) {
-        case SimpleMqttClient::Disconnected: return QStringLiteral("Disconnected");
-        case SimpleMqttClient::Connecting:   return QStringLiteral("Connecting");
-        case SimpleMqttClient::Connected:    return QStringLiteral("Connected");
+    const SimpleMqttClient::State state = m_client->state();
+    const QString text = [state]() {
+        switch (state) {
+        case SimpleMqttClient::Disconnected: return QStringLiteral("未连接");
+        case SimpleMqttClient::Connecting:   return QStringLiteral("连接中");
+        case SimpleMqttClient::Connected:    return QStringLiteral("已连接");
         }
-        return QStringLiteral("Unknown");
+        return QStringLiteral("未知");
     }();
     appendLog(QStringLiteral("%1 --- 状态变化: %2")
-                  .arg(QDateTime::currentDateTime().toString(Qt::ISODate), state));
-    m_connectButton->setText(m_client->state() == SimpleMqttClient::Connected
+                  .arg(QDateTime::currentDateTime().toString(Qt::ISODate), text));
+
+    m_connectButton->setText(state == SimpleMqttClient::Connected
                                  ? QStringLiteral("Disconnect")
                                  : QStringLiteral("Connect"));
+    m_statusLabel->setText(text);
+    if (state == SimpleMqttClient::Connected)
+        m_statusLabel->setStyleSheet(QStringLiteral("color:#22C55E;"));
+    else if (state == SimpleMqttClient::Connecting)
+        m_statusLabel->setStyleSheet(QStringLiteral("color:#F59E0B;"));
+    else
+        m_statusLabel->setStyleSheet(QStringLiteral("color:#6B7280;"));
 }
 
 void mqtt_client::onConnectClicked()
