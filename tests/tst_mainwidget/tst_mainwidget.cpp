@@ -5,6 +5,7 @@
 #include <QListView>
 #include <QListWidget>
 #include <QPixmap>
+#include <QPushButton>
 #include <QStackedWidget>
 
 #include "../../project/mainwidget.h"
@@ -21,6 +22,7 @@ private slots:
     void mediaIconsExistInResources();
     void topNavIsHorizontalWithClock();
     void globalStyleIsLight();
+    void bannaHasLightWidgets();
 };
 
 void TestMainWidget::menuHasExpectedPages()
@@ -114,6 +116,17 @@ void TestMainWidget::globalStyleIsLight()
     QVERIFY(css.contains(QStringLiteral("#2F7CF6")));
     QVERIFY(css.contains(QStringLiteral("listWidget")));
     QVERIFY(css.contains(QStringLiteral("#card")));
+}
+
+void TestMainWidget::bannaHasLightWidgets()
+{
+    MainWidget w;
+    auto *stack = w.findChild<QStackedWidget *>(QStringLiteral("stackedWidget"));
+    QWidget *page = stack->widget(0);
+    QVERIFY(page->findChild<QLabel *>(QStringLiteral("imageLabel")) != nullptr);
+    QVERIFY(page->findChild<QPushButton *>(QStringLiteral("btnLeft")) != nullptr);
+    QVERIFY(page->findChild<QPushButton *>(QStringLiteral("btnRight")) != nullptr);
+    QVERIFY(!page->findChild<QPushButton *>(QStringLiteral("btnLeft"))->icon().isNull());
 }
 
 QTEST_MAIN(TestMainWidget)

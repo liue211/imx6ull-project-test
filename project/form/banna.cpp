@@ -2,6 +2,7 @@
 
 #include <QButtonGroup>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QPropertyAnimation>
 #include <QPushButton>
@@ -31,16 +32,23 @@ void banna::setupUi()
     mainLayout->setContentsMargins(20, 20, 20, 10);
 
     auto *imageArea = new QWidget(this);
+    imageArea->setObjectName(QStringLiteral("card"));
     auto *imageLayout = new QHBoxLayout(imageArea);
-    imageLayout->setContentsMargins(0, 0, 0, 0);
+    imageLayout->setContentsMargins(12, 12, 12, 12);
+    imageLayout->setSpacing(12);
 
     m_imageLabel = new QLabel(imageArea);
+    m_imageLabel->setObjectName(QStringLiteral("imageLabel"));
     m_imageLabel->setAlignment(Qt::AlignCenter);
     m_imageLabel->setScaledContents(true);
     m_imageLabel->setMinimumSize(480, 360);
 
-    m_leftButton = new QPushButton(QStringLiteral("◀"), imageArea);
-    m_rightButton = new QPushButton(QStringLiteral("▶"), imageArea);
+    m_leftButton = new QPushButton(imageArea);
+    m_rightButton = new QPushButton(imageArea);
+    m_leftButton->setObjectName(QStringLiteral("btnLeft"));
+    m_rightButton->setObjectName(QStringLiteral("btnRight"));
+    m_leftButton->setIcon(QIcon(QStringLiteral(":/images/icons/arrow_left.png")));
+    m_rightButton->setIcon(QIcon(QStringLiteral(":/images/icons/arrow_right.png")));
     m_leftButton->setFixedSize(48, 48);
     m_rightButton->setFixedSize(48, 48);
 
@@ -50,14 +58,16 @@ void banna::setupUi()
 
     /* 底部圆点 */
     auto *dotBar = new QWidget(this);
+    dotBar->setObjectName(QStringLiteral("card"));
     m_dotLayout = new QHBoxLayout(dotBar);
-    m_dotLayout->setContentsMargins(0, 8, 0, 0);
+    m_dotLayout->setContentsMargins(12, 12, 12, 12);
     m_dotLayout->setAlignment(Qt::AlignCenter);
     m_dotGroup = new QButtonGroup(this);
     m_dotGroup->setExclusive(true);
 
     for (int i = 0; i < 5; ++i) {
         auto *dot = new QPushButton(dotBar);
+        dot->setObjectName(QStringLiteral("dot"));
         dot->setCheckable(true);
         dot->setFixedSize(14, 14);
         dot->setCursor(Qt::PointingHandCursor);
