@@ -4,7 +4,9 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QFrame>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QLabel>
 #include <QListWidget>
 #include <QMediaPlaylist>
@@ -48,14 +50,17 @@ void MusicPlay::setupUi()
 {
     auto *root = new QHBoxLayout(this);
     root->setContentsMargins(12, 12, 12, 12);
+    root->setSpacing(12);
 
     /* 左:标题 + 列表 + 控制按钮 */
-    auto *left = new QVBoxLayout();
-    auto *title = new QLabel(QStringLiteral("Q Music,Enjoy it!"), this);
-    title->setStyleSheet(QStringLiteral("color:white; font-size:16px;"));
+    auto *leftCard = new QFrame(this);
+    leftCard->setObjectName(QStringLiteral("card"));
+    auto *left = new QVBoxLayout(leftCard);
+    left->setContentsMargins(12, 12, 12, 12);
+    auto *title = new QLabel(QStringLiteral("Q Music,Enjoy it!"), leftCard);
     left->addWidget(title);
 
-    m_list = new QListWidget(this);
+    m_list = new QListWidget(leftCard);
     m_list->setObjectName(QStringLiteral("listWidget"));
     m_list->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     left->addWidget(m_list, 1);
@@ -68,8 +73,12 @@ void MusicPlay::setupUi()
     m_playButton->setObjectName(QStringLiteral("btn_play"));
     m_nextButton->setObjectName(QStringLiteral("btn_next"));
     m_playButton->setCheckable(true);
-    for (QPushButton *button : {m_prevButton, m_playButton, m_nextButton})
-        button->setFixedSize(64, 64);
+    m_prevButton->setFixedSize(64, 64);
+    m_playButton->setFixedSize(72, 72);
+    m_nextButton->setFixedSize(64, 64);
+    m_prevButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_prev.png")));
+    m_playButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_play.png")));
+    m_nextButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_next.png")));
     transport->addStretch();
     transport->addWidget(m_prevButton);
     transport->addWidget(m_playButton);
@@ -77,11 +86,14 @@ void MusicPlay::setupUi()
     transport->addStretch();
     left->addLayout(transport);
 
-    root->addLayout(left, 1);
+    root->addWidget(leftCard, 1);
 
     /* 右:CD + 进度 + 时间 + 小按钮 */
-    auto *right = new QVBoxLayout();
-    m_cdLabel = new QLabel(this);
+    auto *rightCard = new QFrame(this);
+    rightCard->setObjectName(QStringLiteral("card"));
+    auto *right = new QVBoxLayout(rightCard);
+    right->setContentsMargins(12, 12, 12, 12);
+    m_cdLabel = new QLabel(rightCard);
     m_cdLabel->setAlignment(Qt::AlignCenter);
     m_cdLabel->setFixedSize(260, 260);
     m_cdLabel->setPixmap(QPixmap(QStringLiteral(":/images/music_pic/cd.png"))
@@ -94,10 +106,8 @@ void MusicPlay::setupUi()
     right->addWidget(m_durationSlider);
 
     auto *timeRow = new QHBoxLayout();
-    m_timeLabel = new QLabel(QStringLiteral("00:00"), this);
-    m_durationLabel = new QLabel(QStringLiteral("00:00"), this);
-    m_timeLabel->setStyleSheet(QStringLiteral("color:white;"));
-    m_durationLabel->setStyleSheet(QStringLiteral("color:white;"));
+    m_timeLabel = new QLabel(QStringLiteral("00:00"), rightCard);
+    m_durationLabel = new QLabel(QStringLiteral("00:00"), rightCard);
     timeRow->addWidget(m_timeLabel);
     timeRow->addStretch();
     timeRow->addWidget(m_durationLabel);
@@ -114,7 +124,11 @@ void MusicPlay::setupUi()
     m_volumeButton->setObjectName(QStringLiteral("btn_volume"));
     m_favoriteButton->setCheckable(true);
     for (QPushButton *button : {m_favoriteButton, m_modeButton, m_menuButton, m_volumeButton})
-        button->setFixedSize(32, 32);
+        button->setFixedSize(36, 36);
+    m_favoriteButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_favorite.png")));
+    m_modeButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_list.png")));
+    m_menuButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_menu.png")));
+    m_volumeButton->setIcon(QIcon(QStringLiteral(":/images/icons/btn_volume.png")));
     smallRow->addStretch();
     smallRow->addWidget(m_favoriteButton);
     smallRow->addWidget(m_modeButton);
@@ -123,7 +137,7 @@ void MusicPlay::setupUi()
     smallRow->addStretch();
     right->addLayout(smallRow);
 
-    root->addLayout(right, 1);
+    root->addWidget(rightCard, 1);
 }
 
 QString MusicPlay::formatTime(qint64 ms)
@@ -181,7 +195,11 @@ void MusicPlay::onPrevClicked()
 
 void MusicPlay::onStateChanged(QMediaPlayer::State state)
 {
-    m_playButton->setChecked(state == QMediaPlayer::PlayingState);
+    const bool playing = (state == QMediaPlayer::PlayingState);
+    m_playButton->setChecked(playing);
+    m_playButton->setIcon(QIcon(playing
+        ? QStringLiteral(":/images/icons/btn_pause.png")
+        : QStringLiteral(":/images/icons/btn_play.png")));
 }
 
 void MusicPlay::onPlaylistIndexChanged(int index)

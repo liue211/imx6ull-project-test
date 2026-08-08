@@ -28,6 +28,7 @@ private slots:
     void opencvHasLightWidgets();
     void faceDetectHasLightWidgets();
     void boardPageHasChart();
+    void musicPageHasIcons();
 };
 
 void TestMainWidget::menuHasExpectedPages()
@@ -165,6 +166,18 @@ void TestMainWidget::boardPageHasChart()
     auto *stack = w.findChild<QStackedWidget *>(QStringLiteral("stackedWidget"));
     QWidget *page = stack->widget(3);
     QVERIFY(page->findChild<QtCharts::QChartView *>(QStringLiteral("chartView")) != nullptr);
+}
+
+void TestMainWidget::musicPageHasIcons()
+{
+    MainWidget w;
+    auto *stack = w.findChild<QStackedWidget *>(QStringLiteral("stackedWidget"));
+    QWidget *page = stack->widget(4);
+    auto *play = page->findChild<QPushButton *>(QStringLiteral("btn_play"));
+    QVERIFY(play != nullptr);
+    QVERIFY(!play->icon().isNull());
+    QVERIFY(page->findChild<QPushButton *>(QStringLiteral("btn_previous")) != nullptr);
+    QVERIFY(page->findChild<QPushButton *>(QStringLiteral("btn_next")) != nullptr);
 }
 
 QTEST_MAIN(TestMainWidget)
