@@ -5,6 +5,7 @@
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QFile>
+#include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
@@ -39,31 +40,34 @@ void faceDetect::setupUi()
     layout->setContentsMargins(12, 12, 12, 12);
 
     m_display = new QLabel(QStringLiteral("摄像头画面"), this);
+    m_display->setObjectName(QStringLiteral("videoPanel"));
     m_display->setAlignment(Qt::AlignCenter);
     m_display->setMinimumSize(480, 380);
-    m_display->setStyleSheet(
-        QStringLiteral("background:#3c3c3c; color:white; border-radius:8px;"));
     m_display->setScaledContents(true);
 
-    auto *control = new QHBoxLayout();
-    m_deviceBox = new QComboBox(this);
-    m_startButton = new QPushButton(QStringLiteral("开始"), this);
-    m_takePhotoButton = new QPushButton(QStringLiteral("拍照"), this);
-    m_detectButton = new QPushButton(QStringLiteral("人脸检测"), this);
+    auto *controlCard = new QFrame(this);
+    controlCard->setObjectName(QStringLiteral("card"));
+    auto *control = new QHBoxLayout(controlCard);
+    control->setContentsMargins(12, 12, 12, 12);
+    m_deviceBox = new QComboBox(controlCard);
+    m_startButton = new QPushButton(QStringLiteral("开始"), controlCard);
+    m_takePhotoButton = new QPushButton(QStringLiteral("拍照"), controlCard);
+    m_detectButton = new QPushButton(QStringLiteral("人脸检测"), controlCard);
+    m_startButton->setObjectName(QStringLiteral("btn_start"));
 
     m_startButton->setCheckable(true);
     m_detectButton->setCheckable(true);
     m_takePhotoButton->setEnabled(false);
 
-    control->addWidget(new QLabel(QStringLiteral("设备:"), this));
-    control->addWidget(m_deviceBox);
-    control->addStretch();
+    control->addWidget(new QLabel(QStringLiteral("设备:"), controlCard));
+    control->addWidget(m_deviceBox, 1);
+    control->addSpacing(12);
     control->addWidget(m_startButton);
     control->addWidget(m_takePhotoButton);
     control->addWidget(m_detectButton);
 
     layout->addWidget(m_display, 1);
-    layout->addLayout(control);
+    layout->addWidget(controlCard);
 
     connect(m_startButton, &QPushButton::clicked, this, &faceDetect::onStartClicked);
     connect(m_takePhotoButton, &QPushButton::clicked, this, &faceDetect::onTakePhotoClicked);

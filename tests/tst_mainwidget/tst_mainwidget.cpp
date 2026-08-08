@@ -25,6 +25,7 @@ private slots:
     void globalStyleIsLight();
     void bannaHasLightWidgets();
     void opencvHasLightWidgets();
+    void faceDetectHasLightWidgets();
 };
 
 void TestMainWidget::menuHasExpectedPages()
@@ -145,6 +146,15 @@ void TestMainWidget::opencvHasLightWidgets()
             found = true;
     }
     QVERIFY(found);
+}
+
+void TestMainWidget::faceDetectHasLightWidgets()
+{
+    MainWidget w;
+    auto *stack = w.findChild<QStackedWidget *>(QStringLiteral("stackedWidget"));
+    QWidget *page = stack->widget(2);
+    QVERIFY(page->findChild<QLabel *>(QStringLiteral("videoPanel")) != nullptr);
+    QVERIFY(page->findChild<QPushButton *>(QStringLiteral("btn_start")) != nullptr);
 }
 
 QTEST_MAIN(TestMainWidget)
