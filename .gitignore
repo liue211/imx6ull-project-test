@@ -4,6 +4,7 @@ x86/
 build/
 build-arm/
 .worktrees/
+tests/result_*.txt
 debug/
 release/
 
