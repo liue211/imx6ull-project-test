@@ -19,6 +19,8 @@
 - 图标统一 48×48 透明 PNG、扁平线性;播放/暂停等主控图标在播放态切换为暂停图标。
 - 字体使用系统默认;标题 20px,正文 14~16px,大数字 28~36px。
 - Windows 构建:VS2022 Developer 环境下 `x86/build.cmd`;测试:`tests/tests.pro` + `nmake` + `QT_QPA_PLATFORM=offscreen`。
+- 测试与运行前必须设置 PATH:`D:\anaconda3\Library\bin;D:\opencv-3.4.16\opencv\build\x64\vc15\bin` 在前,否则测试/程序找不到 Qt 与 OpenCV DLL。
+- 主窗口 `MainWidget` 必须设置 `setObjectName("project")`,使 `QWidget#project` 全局背景样式生效。
 
 ## File Structure
 
@@ -93,6 +95,7 @@ void TestMainWidget::mediaIconsExistInResources()
 
 ```bat
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+set PATH=D:\anaconda3\Library\bin;D:\opencv-3.4.16\opencv\build\x64\vc15\bin;%PATH%
 cd tests
 qmake tests.pro
 nmake
@@ -100,7 +103,7 @@ set QT_QPA_PLATFORM=offscreen
 tst_mainwidget\release\tst_mainwidget.exe -o result.txt
 ```
 
-Expected: `mediaIconsExistInResources` FAIL(资源不存在)。
+Expected: `mediaIconsExistInResources` FAIL(资源不存在,且确保 DLL 加载正常)。
 
 - [ ] **Step 3: 创建图标生成脚本**
 
@@ -450,6 +453,7 @@ void topNavIsHorizontalWithClock();
 void TestMainWidget::topNavIsHorizontalWithClock()
 {
     MainWidget w;
+    QCOMPARE(w.objectName(), QStringLiteral("project"));
     auto *list = w.findChild<QListWidget *>(QStringLiteral("listWidget"));
     auto *time = w.findChild<QLabel *>(QStringLiteral("timeLabel"));
     QVERIFY(list != nullptr);
@@ -464,7 +468,7 @@ include 增加 `#include <QLabel>` 与 `#include <QListView>`。
 
 - [ ] **Step 2: 运行测试确认失败**
 
-命令同 Task 1 Step 2。Expected: `topNavIsHorizontalWithClock` FAIL(flow 不是 LeftToRight 或缺少 timeLabel)。
+命令同 Task 1 Step 2(含 PATH 设置)。Expected: `topNavIsHorizontalWithClock` FAIL(flow 不是 LeftToRight、objectName 不是 project 或缺少 timeLabel)。
 
 - [ ] **Step 3: 修改 mainwidget.h**
 
@@ -499,6 +503,7 @@ private:
 ```cpp
 void MainWidget::buildUi()
 {
+    setObjectName(QStringLiteral("project"));
     auto *root = new QVBoxLayout(this);
     root->setContentsMargins(0, 0, 0, 0);
     root->setSpacing(0);
@@ -1187,12 +1192,12 @@ void TestMainWidget::boardPageHasChart()
 {
     MainWidget w;
     auto *stack = w.findChild<QStackedWidget *>(QStringLiteral("stackedWidget"));
-    QWidget *page = stack->widget(3);
-    QVERIFY(page->findChild<QChartView *>(QStringLiteral("chartView")) != nullptr);
+QWidget *page = stack->widget(3);
+QVERIFY(page->findChild<QtCharts::QChartView *>(QStringLiteral("chartView")) != nullptr);
 }
 ```
 
-include 增加 `#include <QChartView>`。
+include 增加 `#include <QChartView>`(`QtCharts::QChartView` 的完整限定名已在上面使用,不需要 `using namespace QtCharts`)。
 
 - [ ] **Step 2: 运行测试确认失败**
 
@@ -1738,6 +1743,7 @@ Expected: 编译无错误,`x86\release\project.exe` 生成。
 
 ```bat
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+set PATH=D:\anaconda3\Library\bin;D:\opencv-3.4.16\opencv\build\x64\vc15\bin;%PATH%
 cd tests
 qmake tests.pro
 nmake
