@@ -93,14 +93,40 @@ void TestMainWidget::mediaIconsExistInResources()
 
 - [ ] **Step 2: 运行测试确认失败**
 
+先创建 `tests/build_tests.cmd`(与 Task 1 一起提交),内容:
+
 ```bat
+@echo off
 call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+if errorlevel 1 exit /b 1
 set PATH=D:\anaconda3\Library\bin;D:\opencv-3.4.16\opencv\build\x64\vc15\bin;%PATH%
-cd tests
-qmake tests.pro
+cd /d "%~dp0"
+
+cd tst_mainwidget
+qmake -spec win32-msvc tst_mainwidget.pro
+if errorlevel 1 exit /b 1
 nmake
+if errorlevel 1 exit /b 1
+cd ..\tst_hardware
+qmake -spec win32-msvc tst_hardware.pro
+if errorlevel 1 exit /b 1
+nmake
+if errorlevel 1 exit /b 1
+cd ..
+
 set QT_QPA_PLATFORM=offscreen
-tst_mainwidget\release\tst_mainwidget.exe -o result.txt
+tst_mainwidget\release\tst_mainwidget.exe -o result_mainwidget.txt
+if errorlevel 1 exit /b 1
+tst_hardware\release\tst_hardware.exe -o result_hardware.txt
+if errorlevel 1 exit /b 1
+type result_mainwidget.txt
+type result_hardware.txt
+```
+
+然后从仓库根目录执行:
+
+```bat
+cmd /c tests\build_tests.cmd
 ```
 
 Expected: `mediaIconsExistInResources` FAIL(资源不存在,且确保 DLL 加载正常)。
@@ -422,7 +448,7 @@ Expected: 27 个 PNG 生成到 `project/images/icons/`,无异常。
 - [ ] **Step 7: Commit**
 
 ```bash
-git add scripts/generate_icons.py project/images/icons project/res.qrc tests/tst_mainwidget/tst_mainwidget.cpp
+git add scripts/generate_icons.py project/images/icons project/res.qrc tests/build_tests.cmd tests/tst_mainwidget/tst_mainwidget.cpp
 git commit -m "feat(icons): 生成浅色 UI 图标并注册到资源"
 ```
 
@@ -468,7 +494,7 @@ include 增加 `#include <QLabel>` 与 `#include <QListView>`。
 
 - [ ] **Step 2: 运行测试确认失败**
 
-命令同 Task 1 Step 2(含 PATH 设置)。Expected: `topNavIsHorizontalWithClock` FAIL(flow 不是 LeftToRight、objectName 不是 project 或缺少 timeLabel)。
+命令同 Task 1 Step 2(`cmd /c tests\build_tests.cmd`)。Expected: `topNavIsHorizontalWithClock` FAIL(flow 不是 LeftToRight、objectName 不是 project 或缺少 timeLabel)。
 
 - [ ] **Step 3: 修改 mainwidget.h**
 
@@ -1742,14 +1768,7 @@ Expected: 编译无错误,`x86\release\project.exe` 生成。
 - [ ] **Step 2: 构建并运行全部测试**
 
 ```bat
-call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
-set PATH=D:\anaconda3\Library\bin;D:\opencv-3.4.16\opencv\build\x64\vc15\bin;%PATH%
-cd tests
-qmake tests.pro
-nmake
-set QT_QPA_PLATFORM=offscreen
-tst_mainwidget\release\tst_mainwidget.exe -o result.txt
-tst_hardware\release\tst_hardware.exe -o result.txt
+cmd /c tests\build_tests.cmd
 ```
 
 Expected: 两个测试程序全部用例 PASS(原 3 个主框架用例 + 11 个新增 UI 用例 + tst_hardware 用例)。
