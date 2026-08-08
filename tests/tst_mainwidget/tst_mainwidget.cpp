@@ -1,5 +1,7 @@
 #include <QtTest/QtTest>
 
+#include <QLabel>
+#include <QListView>
 #include <QListWidget>
 #include <QPixmap>
 #include <QStackedWidget>
@@ -16,6 +18,7 @@ private slots:
     void switchingRowChangesPage();
     void pagesAreRealModules();
     void mediaIconsExistInResources();
+    void topNavIsHorizontalWithClock();
 };
 
 void TestMainWidget::menuHasExpectedPages()
@@ -85,6 +88,19 @@ void TestMainWidget::mediaIconsExistInResources()
     };
     for (const QString &path : paths)
         QVERIFY2(!QPixmap(path).isNull(), qPrintable(path));
+}
+
+void TestMainWidget::topNavIsHorizontalWithClock()
+{
+    MainWidget w;
+    QCOMPARE(w.objectName(), QStringLiteral("project"));
+    auto *list = w.findChild<QListWidget *>(QStringLiteral("listWidget"));
+    auto *time = w.findChild<QLabel *>(QStringLiteral("timeLabel"));
+    QVERIFY(list != nullptr);
+    QCOMPARE(list->flow(), QListView::LeftToRight);
+    QCOMPARE(list->maximumHeight(), 64);
+    QVERIFY(time != nullptr);
+    QVERIFY(!time->text().isEmpty());
 }
 
 QTEST_MAIN(TestMainWidget)

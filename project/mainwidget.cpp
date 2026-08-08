@@ -9,8 +9,13 @@
 #include "form/videoplayer.h"
 
 #include <QHBoxLayout>
+#include <QLabel>
+#include <QListView>
 #include <QListWidget>
 #include <QStackedWidget>
+#include <QTimer>
+#include <QTime>
+#include <QVBoxLayout>
 
 namespace {
 
@@ -47,23 +52,56 @@ MainWidget::~MainWidget() = default;
 
 void MainWidget::buildUi()
 {
-    m_listWidget = new QListWidget(this);
+    setObjectName(QStringLiteral("project"));
+
+    auto *root = new QVBoxLayout(this);
+    root->setContentsMargins(0, 0, 0, 0);
+    root->setSpacing(0);
+
+    auto *header = new QWidget(this);
+    header->setObjectName(QStringLiteral("headerBar"));
+    auto *headerLayout = new QHBoxLayout(header);
+    headerLayout->setContentsMargins(16, 0, 16, 0);
+    headerLayout->setSpacing(8);
+
+    m_titleLabel = new QLabel(QStringLiteral("imx6ull 工程"), header);
+    m_titleLabel->setObjectName(QStringLiteral("titleLabel"));
+
+    m_listWidget = new QListWidget(header);
     m_listWidget->setObjectName(QStringLiteral("listWidget"));
-    m_listWidget->setStyleSheet(
-        QStringLiteral("background-color: black; color: white;"));
-    m_listWidget->setMaximumWidth(200);
+    m_listWidget->setFlow(QListView::LeftToRight);
+    m_listWidget->setWrapping(false);
+    m_listWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_listWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_listWidget->setFixedHeight(64);
+
+    m_timeLabel = new QLabel(QStringLiteral("--:--"), header);
+    m_timeLabel->setObjectName(QStringLiteral("timeLabel"));
+
+    headerLayout->addWidget(m_titleLabel);
+    headerLayout->addSpacing(16);
+    headerLayout->addWidget(m_listWidget, 1);
+    headerLayout->addWidget(m_timeLabel);
 
     m_stackedWidget = new QStackedWidget(this);
     m_stackedWidget->setObjectName(QStringLiteral("stackedWidget"));
 
-    m_layout = new QHBoxLayout(this);
-    m_layout->setContentsMargins(0, 0, 0, 0);
-    m_layout->addWidget(m_listWidget);
-    m_layout->addWidget(m_stackedWidget);
+    root->addWidget(header);
+    root->addWidget(m_stackedWidget, 1);
 
-    /* 列表行切换 -> 堆栈页面切换 */
     connect(m_listWidget, &QListWidget::currentRowChanged,
             m_stackedWidget, &QStackedWidget::setCurrentIndex);
+
+    m_clockTimer = new QTimer(this);
+    m_clockTimer->setInterval(1000);
+    connect(m_clockTimer, &QTimer::timeout, this, &MainWidget::updateClock);
+    m_clockTimer->start();
+    updateClock();
+}
+
+void MainWidget::updateClock()
+{
+    m_timeLabel->setText(QTime::currentTime().toString(QStringLiteral("HH:mm")));
 }
 
 void MainWidget::registerPages()
@@ -71,7 +109,7 @@ void MainWidget::registerPages()
     for (const auto &page : kPages) {
         auto *item = new QListWidgetItem(page.title);
         item->setTextAlignment(Qt::AlignCenter);
-        item->setSizeHint(QSize(100, 60));
+        item->setSizeHint(QSize(110, 44));
         m_listWidget->addItem(item);
 
         m_stackedWidget->addWidget(page.createPage());
