@@ -107,8 +107,10 @@ void banna::showNext()
     m_timer->start();   /* 手动切换后重新计时 */
     m_imageLabel->setPixmap(QPixmap(m_imagePaths.at((m_current + 1) % m_imagePaths.size())));
     m_anim->stop();
-    m_anim->setStartValue(QPoint(m_imageLabel->width(), 0));
-    m_anim->setEndValue(QPoint(0, 0));
+    /* 以 layout 分配的位置为终点,从右侧滑入,保证图片居中 */
+    const QPoint home = m_imageLabel->pos();
+    m_anim->setStartValue(home + QPoint(m_imageLabel->width(), 0));
+    m_anim->setEndValue(home);
     m_current = (m_current + 1) % m_imagePaths.size();
     updateDots();
     m_anim->start();
@@ -120,8 +122,10 @@ void banna::showPrev()
     m_imageLabel->setPixmap(QPixmap(m_imagePaths.at(
         (m_current - 1 + m_imagePaths.size()) % m_imagePaths.size())));
     m_anim->stop();
-    m_anim->setStartValue(QPoint(-m_imageLabel->width(), 0));
-    m_anim->setEndValue(QPoint(0, 0));
+    /* 从左侧滑入,终点为 layout 位置 */
+    const QPoint home = m_imageLabel->pos();
+    m_anim->setStartValue(home - QPoint(m_imageLabel->width(), 0));
+    m_anim->setEndValue(home);
     m_current = (m_current - 1 + m_imagePaths.size()) % m_imagePaths.size();
     updateDots();
     m_anim->start();
