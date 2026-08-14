@@ -40,3 +40,4 @@ Thumbs.db
 .idea/
 .reasonix/
 reasonix.toml
+.zcode/
