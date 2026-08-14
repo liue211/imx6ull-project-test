@@ -2,7 +2,7 @@
 # 板端 OTA 应用脚本:解压升级包 → 记录回滚点 → 切换 symlink
 #
 # 用法: apply_update.sh <新版本目录名> <升级包路径> <当前版本号>
-# 由 Qt 的 OtaClient 调用;目录约定见 docs/ota-说明.md
+# 由 Qt 的 OtaClient 调用;目录约定: /home/root/project -> project_vX.Y.Z(symlink)
 #
 # 目录布局:
 #   /home/root/project            -> symlink,指向当前版本
