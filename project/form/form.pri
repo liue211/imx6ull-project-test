@@ -5,6 +5,7 @@ HEADERS += \
     $$PWD/mqtt_client.h \
     $$PWD/musicplay.h \
     $$PWD/opencv.h \
+    $$PWD/ota_upgrade.h \
     $$PWD/videoplayer.h
 
 SOURCES += \
@@ -14,4 +15,5 @@ SOURCES += \
     $$PWD/mqtt_client.cpp \
     $$PWD/musicplay.cpp \
     $$PWD/opencv.cpp \
+    $$PWD/ota_upgrade.cpp \
     $$PWD/videoplayer.cpp

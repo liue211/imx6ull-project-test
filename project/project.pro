@@ -26,10 +26,15 @@ RESOURCES += \
 # ---------- 模块收集(.pri) ----------
 include(./form/form.pri)
 include(./hardware/hardware.pri)
+include(./ota/ota.pri)
 
 INCLUDEPATH += $$PWD/hardware
 INCLUDEPATH += $$PWD/form
 INCLUDEPATH += $$PWD/lib
+INCLUDEPATH += $$PWD/ota
+
+# ---------- 应用版本号(OTA 升级用,打包脚本需保持一致) ----------
+DEFINES += APP_VERSION=\\\"1.0.0\\\"
 
 # ---------- MQTT(自研轻量客户端,MQTT 3.1.1 / QoS0) ----------
 HEADERS += \

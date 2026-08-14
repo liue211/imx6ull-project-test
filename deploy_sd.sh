@@ -68,6 +68,11 @@ cp -rv "$SRC_DIR/project/myMusic" \
        "$SRC_DIR/project/opencv_src" \
        "$MNT/home/root/project/"
 
+# OTA 升级脚本(板端 /home/root/ 下,run_project.sh 守护启动 + apply_update.sh 升级切换)
+cp -v "$SRC_DIR/scripts/run_project.sh" \
+      "$SRC_DIR/scripts/apply_update.sh" \
+      "$MNT/home/root/"
+
 if [ -n "$OPENCV_INSTALL" ] && [ -d "$OPENCV_INSTALL/lib" ]; then
     echo "---- 拷贝 OpenCV 动态库到板子系统 /usr/lib ----"
     cp -v "$OPENCV_INSTALL"/lib/libopencv_*.so* "$MNT/usr/lib/"
@@ -81,7 +86,10 @@ trap - EXIT
 rmdir "$MNT" 2>/dev/null || true
 
 echo ""
-echo "部署完成。板子端运行:"
+echo "部署完成。板子端运行(推荐用守护脚本,支持 OTA 升级回滚):"
+echo "  chmod +x /home/root/run_project.sh && /home/root/run_project.sh"
+echo ""
+echo "或手动启动:"
 echo "  cd /home/root/project"
 echo "  export QT_QPA_PLATFORM=eglfs"
 echo "  export LD_LIBRARY_PATH=/usr/lib:/usr/lib/qt5.6.2/lib:\$LD_LIBRARY_PATH"

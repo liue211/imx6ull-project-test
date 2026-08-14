@@ -11,9 +11,11 @@ INCLUDEPATH += $$PWD/../project
 INCLUDEPATH += $$PWD/../project/hardware
 INCLUDEPATH += $$PWD/../project/form
 INCLUDEPATH += $$PWD/../project/lib
+INCLUDEPATH += $$PWD/../project/ota
 
 include(../project/form/form.pri)
 include(../project/hardware/hardware.pri)
+include(../project/ota/ota.pri)
 
 SOURCES += \
     $$PWD/../project/lib/simplemqtt.cpp \

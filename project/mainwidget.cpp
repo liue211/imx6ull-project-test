@@ -6,6 +6,7 @@
 #include "form/mqtt_client.h"
 #include "form/musicplay.h"
 #include "form/opencv.h"
+#include "form/ota_upgrade.h"
 #include "form/videoplayer.h"
 
 #include <QHBoxLayout>
@@ -34,6 +35,7 @@ const PageDescriptor kPages[] = {
     { QStringLiteral("音频播放器"),       []() -> QWidget * { return new MusicPlay; } },
     { QStringLiteral("视频播放器"),       []() -> QWidget * { return new VideoPlayer; } },
     { QStringLiteral("MQTT_CLIENT"),    []() -> QWidget * { return new mqtt_client; } },
+    { QStringLiteral("OTA升级"),        []() -> QWidget * { return new ota_upgrade; } },
 };
 
 } // namespace

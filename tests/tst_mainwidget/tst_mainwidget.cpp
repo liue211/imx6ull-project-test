@@ -13,7 +13,7 @@
 
 #include "../../project/mainwidget.h"
 
-/* 主框架验收:7 个真实模块页面 + 列表/堆栈联动 */
+/* 主框架验收:8 个真实模块页面 + 列表/堆栈联动 */
 class TestMainWidget : public QObject
 {
     Q_OBJECT
@@ -32,6 +32,7 @@ private slots:
     void musicPageHasIcons();
     void videoPageHasIcons();
     void mqttPageHasStatus();
+    void otaPageHasWidgets();
 };
 
 void TestMainWidget::menuHasExpectedPages()
@@ -43,10 +44,11 @@ void TestMainWidget::menuHasExpectedPages()
 
     QVERIFY(list != nullptr);
     QVERIFY(stack != nullptr);
-    QCOMPARE(list->count(), 7);
-    QCOMPARE(stack->count(), 7);
+    QCOMPARE(list->count(), 8);
+    QCOMPARE(stack->count(), 8);
     QCOMPARE(list->item(0)->text(), QStringLiteral("轮播图"));
     QCOMPARE(list->item(6)->text(), QStringLiteral("MQTT_CLIENT"));
+    QCOMPARE(list->item(7)->text(), QStringLiteral("OTA升级"));
 }
 
 void TestMainWidget::switchingRowChangesPage()
@@ -200,6 +202,18 @@ void TestMainWidget::mqttPageHasStatus()
     auto *stack = w.findChild<QStackedWidget *>(QStringLiteral("stackedWidget"));
     QWidget *page = stack->widget(6);
     QVERIFY(page->findChild<QLabel *>(QStringLiteral("statusLabel")) != nullptr);
+    QVERIFY(page->findChild<QPlainTextEdit *>(QStringLiteral("logEdit")) != nullptr);
+}
+
+void TestMainWidget::otaPageHasWidgets()
+{
+    MainWidget w;
+    auto *stack = w.findChild<QStackedWidget *>(QStringLiteral("stackedWidget"));
+    QWidget *page = stack->widget(7);
+    QVERIFY(page->findChild<QLabel *>(QStringLiteral("curVersionLabel")) != nullptr);
+    QVERIFY(page->findChild<QLabel *>(QStringLiteral("serverVersionLabel")) != nullptr);
+    QVERIFY(page->findChild<QPushButton *>(QStringLiteral("checkButton")) != nullptr);
+    QVERIFY(page->findChild<QPushButton *>(QStringLiteral("upgradeButton")) != nullptr);
     QVERIFY(page->findChild<QPlainTextEdit *>(QStringLiteral("logEdit")) != nullptr);
 }
 

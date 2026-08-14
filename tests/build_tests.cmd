@@ -15,6 +15,11 @@ qmake -spec win32-msvc tst_hardware.pro
 if errorlevel 1 exit /b 1
 nmake
 if errorlevel 1 exit /b 1
+cd ..\tst_ota
+qmake -spec win32-msvc tst_ota.pro
+if errorlevel 1 exit /b 1
+nmake
+if errorlevel 1 exit /b 1
 cd ..
 
 set QT_QPA_PLATFORM=offscreen
@@ -22,5 +27,8 @@ tst_mainwidget\release\tst_mainwidget.exe -o result_mainwidget.txt
 if errorlevel 1 exit /b 1
 tst_hardware\release\tst_hardware.exe -o result_hardware.txt
 if errorlevel 1 exit /b 1
+tst_ota\release\tst_ota.exe -o result_ota.txt
+if errorlevel 1 exit /b 1
 type result_mainwidget.txt
 type result_hardware.txt
+type result_ota.txt
